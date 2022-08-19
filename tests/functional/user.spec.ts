@@ -1,6 +1,12 @@
+import Database from '@ioc:Adonis/Lucid/Database'
 import { test } from '@japa/runner'
 
-test.group('Storing users', () => {
+test.group('Storing users', (store) => {
+  store.each.setup(async () => {
+    await Database.beginGlobalTransaction()
+    return () => Database.rollbackGlobalTransaction()
+  })
+
   test('no request body', async ({ client }) => {
     const response = await client.post('/users')
 
