@@ -38,3 +38,5 @@ Route.get('/db_connection', async ({ response }: HttpContextContract) => {
 Route.get('/users', async () => {
   return { message: `Returns all users.` }
 })
+
+Route.post('/users', 'UsersController.store')
