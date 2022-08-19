@@ -9,6 +9,12 @@ export default class Post extends BaseModel {
   @column()
   public userId: number
 
+  @column()
+  public title: string
+
+  @column()
+  public text: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
