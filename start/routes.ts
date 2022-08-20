@@ -26,16 +26,24 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.get('/db_connection', async ({ response }: HttpContextContract) => {
-  await Database.report().then((health) => {
-    if (health.health.healthy === true) {
-      return response.ok({ message: `Awesome! Connection is healthy (:` })
-    }
-    return response.status(500).json({ message: `Connection is not healthy :(` })
-  })
-})
-
 Route.post('/login', 'AuthController.login')
+
+Route.post('/permission', 'AuthController.grantPermission').middleware(['auth', 'is:admin'])
+
+Route.group(() => {
+  Route.get('/db_connection', async ({ response }: HttpContextContract) => {
+    await Database.report().then((health) => {
+      if (health.health.healthy === true) {
+        return response.ok({ message: `Awesome! Connection is healthy (:` })
+      }
+      return response.status(500).json({ message: `Connection is not healthy :(` })
+    })
+  }).middleware(['auth', 'is:admin'])
+
+  Route.get('/admin_auth', 'AuthController.testAuthorization').middleware(['auth', 'is:admin'])
+  Route.get('/editor_auth', 'AuthController.testAuthorization').middleware(['auth', 'is:editor'])
+  Route.get('/user_auth', 'AuthController.testAuthorization').middleware(['auth', 'is:user'])
+}).prefix('/tests')
 
 Route.group(() => {
   Route.resource('/users', 'UsersController').only(['update', 'show', 'destroy', 'index'])
