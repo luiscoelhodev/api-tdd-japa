@@ -1,8 +1,8 @@
 import Database from '@ioc:Adonis/Lucid/Database'
 import { test } from '@japa/runner'
 
-test.group('Storing users', (store) => {
-  store.each.setup(async () => {
+test.group('Storing users', (storeTest) => {
+  storeTest.each.setup(async () => {
     await Database.beginGlobalTransaction()
     return () => Database.rollbackGlobalTransaction()
   })
@@ -96,8 +96,3 @@ test.group('Storing users', (store) => {
     response.assertBodyContains({ newUserFound: {} })
   })
 })
-
-test.group('Updating users', () => {})
-test.group('Deleting users', () => {})
-test.group('Showing a user', () => {})
-test.group('All users', () => {})
